@@ -1,34 +1,56 @@
 import React, {useState, useEffect} from "react";
 import axios, { Axios } from "axios";
-import { vendorDetails } from "../data";
-
+import { vendorDetails } from "../../data";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
     brand: '',
+    city: '',
     state: '',
     type: '',
     email: '',
-    phone: '',
+    mobile: '',
     password: '',
   })
+
+  const navigate = useNavigate();
+
   const handlechange = (e) => {
-    const {name, value} = e.target.value;
+    const {name, value} = e.target;
     setFormData({...formData, [name]: value})
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:3500/registration_Vendor', formData);
-      console.log(res);
+        const res = await axios.post('http://localhost:3500/registration_Vendor', formData);
+        
+        
+        toast.success(res.data.message);
+
+        if (res.data.redirectURL) {
+            setTimeout(() => {
+                navigate(res.data.redirectURL);
+            }, 2000);
+        }
     } catch (error) {
-      console.error(error);
+        if (error.response && error.response.data) {
+            // Backend error response
+            toast.error(error.response.data.message || 'An error occurred.');
+        } else {
+            // Network or other errors
+            toast.error('An unexpected error occurred. Please try again.');
+        }
     }
-  };
+};
+
 
   return (
     <div className="w-full flex justify-center">
+    <ToastContainer/>
       <div className="flex">
       {/* Left Section with Image */}
       <div className="hidden lg:block">
@@ -40,7 +62,7 @@ const Signup = () => {
       </div>
 
       {/* Right Section with Form */}
-      <div className="lg:w-1/2 flex flex-col text-white justify-start p-6 bg-gradient-to-r from-pink-300 to-pink-400">
+      <div className="lg:w-1/2 flex flex-col justify-start p-6 bg-gradient-to-r from-pink-300 to-pink-400">
         <h1 className="text-2xl font-semibold  mb-4">
           Grow your Business
         </h1>
@@ -59,10 +81,30 @@ const Signup = () => {
               type="text"
               placeholder="Enter your brand name"
               className="mt-1 block w-full p-2 border outline-none border-gray-300 rounded-md"
+              name="brand"
+              value={formData.brand}
               onChange={handlechange}
             />
           </div>
 
+          {/* State */}
+          <div>
+            <label className="block text-gray-700 text-sm font-medium">
+              State<span className="text-red-500">*</span>
+            </label>
+            <select
+              className="mt-1 block w-full p-2 border outline-none border-gray-300 rounded-md"
+              onChange={handlechange}
+              name="state"
+              value={formData.state}
+            >
+              <option value="">Select a State</option>
+              <option value="delhi">Delhi</option>
+              <option value="mumbai">Mumbai</option>
+              {/* Add more cities here */}
+            </select>
+          </div>
+          
           {/* City */}
           <div>
             <label className="block text-gray-700 text-sm font-medium">
@@ -71,6 +113,8 @@ const Signup = () => {
             <select
               className="mt-1 block w-full p-2 border outline-none border-gray-300 rounded-md"
               onChange={handlechange}
+              name="city"
+              value={formData.city}
             >
               <option value="">Select a city</option>
               <option value="delhi">Delhi</option>
@@ -87,6 +131,8 @@ const Signup = () => {
             <select
               className="mt-1 block w-full p-2 border outline-none border-gray-300 rounded-md"
               onChange={handlechange}
+              name="type"
+              value={formData.type}
             >
               <option value="">Select a vendor type</option>
               {vendorDetails.map((vendors, key)=>(
@@ -105,7 +151,9 @@ const Signup = () => {
               type="email"
               placeholder="Enter your email"
               className="mt-1 block w-full p-2 border outline-none border-gray-300 rounded-md"
+              name="email"
               onChange={handlechange}
+              value={formData.email}
             />
           </div>
 
@@ -123,6 +171,8 @@ const Signup = () => {
                 placeholder="Enter your phone number"
                 className="w-full p-2 border outline-none border-gray-300 rounded-r-md"
                 onChange={handlechange}
+                name="mobile"
+                value={formData.mobile}
               />
             </div>
           </div>
@@ -137,6 +187,8 @@ const Signup = () => {
               placeholder="Enter your password"
               className="mt-1 block w-full outline-none p-2 border border-gray-300 rounded-md"
               onChange={handlechange}
+              name="password"
+              value={formData.password}
             />
           </div>
 

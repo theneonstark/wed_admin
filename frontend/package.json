@@ -13,10 +13,13 @@
     "axios": "^1.7.9",
     "boxicons": "^2.1.4",
     "cra-template": "1.2.0",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-apexcharts": "^1.7.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.1",
     "react-scripts": "5.0.1",
+    "react-toastify": "^11.0.2",
     "styled-components": "^6.1.13"
   },
   "scripts": {
