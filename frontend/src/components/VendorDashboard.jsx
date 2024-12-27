@@ -10,7 +10,9 @@ function VendorDashboard() {
   useEffect(() => {
       const fetchDashboard = async () => {
           try {
-              const response = await axios.get('http://localhost:3500/VendorDashboard/info');
+              const response = await axios.get('http://localhost:3500/VendorDashboard/info',{
+                withCredentials: true,
+              });
                 console.log(response);
                 setVendor(response.data.user);
                 
