@@ -7,37 +7,37 @@ import bodyParser from 'body-parser';
 import jwt from 'jsonwebtoken';
 import session from 'express-session';
 import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser'
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 const app = express();
+
 // Configure CORS
 const corsOptions = {
-    origin: 'http://localhost:3000', // Allow requests from this origin
+    origin: 'http://localhost:3001', // Allow requests from this origin
     methods: 'GET,POST,PUT,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
-    credential: true,
+    credentials: true, // Use 'credentials' instead of 'credential'
 };
+
 app.use(cors(corsOptions));
 app.use(json());
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 // Session setup
 app.use(
     session({
         secret: process.env.SESSION_SECRET || "zlcxzMQMFf", // Replace with a strong secret key
         resave: false,
-        saveUninitialized: false,
+        saveUninitialized: true,
         cookie: {
-            secure: false,
-            maxAge: 3600000,
-        }, // 1 hour
+            secure: false, // Set to false for local development (HTTP)
+            maxAge: 3600000, // 1 hour
+        },
     })
 );
-
 
 const db = mysql.createConnection({
     host: 'localhost',
@@ -77,40 +77,39 @@ app.post('/registration_Vendor', async (req, res) => {
             const mobileCheckQuery = 'SELECT * FROM vendors WHERE mobile = ?';
 
             db.query(mobileCheckQuery, [mobile], async (err, result) => {
-
-            if (err) {
-                console.error('Database Error:', err);
-                return res.status(500).json({ message: 'Database error during mobile check.', error: err.message });
-            }
-
-            if (result.length > 0) {
-                return res.status(400).json({ message: 'Mobile number is already registered.' });
-            }
-
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            const insertQuery =
-                'INSERT INTO vendors (Brand_name, State, city, vendor_type, email, mobile, password) VALUES (?,?,?,?,?,?,?)';
-            db.query(
-                insertQuery,
-                [brand, state, city, type, email, mobile, hashedPassword],
-                (insertErr, insertResult) => {
-                    if (insertErr) {
-                        console.error('Database Error during Insert:', insertErr);
-                        return res.status(500).json({ message: 'Database error during signup.', error: insertErr.message });
-                    }
-
-                    const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' });
-                    req.session.user = { email }; // Store user in session
-                    res.status(201).json({
-                        message: 'User registered successfully.',
-                        token,
-                        redirectURL: '/VendorDashboard/info',
-                    });
-                    console.log(req.session.user);
+                if (err) {
+                    console.error('Database Error:', err);
+                    return res.status(500).json({ message: 'Database error during mobile check.', error: err.message });
                 }
-            );
-        });
+
+                if (result.length > 0) {
+                    return res.status(400).json({ message: 'Mobile number is already registered.' });
+                }
+
+                const hashedPassword = await bcrypt.hash(password, 10);
+
+                const insertQuery =
+                    'INSERT INTO vendors (Brand_name, State, city, vendor_type, email, mobile, password) VALUES (?,?,?,?,?,?,?)';
+                db.query(
+                    insertQuery,
+                    [brand, state, city, type, email, mobile, hashedPassword],
+                    (insertErr, insertResult) => {
+                        if (insertErr) {
+                            console.error('Database Error during Insert:', insertErr);
+                            return res.status(500).json({ message: 'Database error during signup.', error: insertErr.message });
+                        }
+
+                        const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' });
+                        req.session.user = { email }; // Store user in session
+                        res.status(201).json({
+                            message: 'User registered successfully.',
+                            token,
+                            redirectURL: '/VendorDashboard/info',
+                        });
+                        console.log(req.session.user);
+                    }
+                );
+            });
         });
     } catch (error) {
         console.error('Error during signup:', error);
@@ -118,12 +117,10 @@ app.post('/registration_Vendor', async (req, res) => {
     }
 });
 
-
-
 // Get Vendor routes
 app.get('/VendorDashboard/info', (req, res) => {
     if (req.session.user) {
-        return res.status(200).json({valid: true, message: 'Authenticated', user: req.session.user });
+        return res.status(200).json({ valid: true, message: 'Authenticated', user: req.session.user });
     }
     res.status(401).json({ message: 'Unauthorized: Please login first.' });
 });

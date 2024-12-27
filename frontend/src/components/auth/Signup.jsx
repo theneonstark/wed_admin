@@ -26,7 +26,9 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const res = await axios.post('http://localhost:3500/registration_Vendor', formData);
+        const res = await axios.post('http://localhost:3500/registration_Vendor', formData,{
+          withCredentials: true
+        });
         
         
         toast.success(res.data.message);
