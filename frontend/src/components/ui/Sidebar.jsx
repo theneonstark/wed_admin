@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import 'boxicons';
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -41,12 +42,18 @@ const Sidebar = () => {
             </button>
             {activeMenu === "dashboard" && (
               <div className="ml-4 mt-2 space-y-2">
-                <a href="#" className="block hover:bg-gray-700 px-4 py-2">
+                <Link to="/Dashboard/Overview" className="inline-flex items-center gap-1 hover:bg-gray-700 px-4 py-2">
+                <box-icon name='chart' color='#ffffff' ></box-icon>
+                Overview
+                </Link>
+                <Link to="/Dashboard/TotalVendor" className="inline-flex items-center gap-1 hover:bg-gray-700 px-4 py-2">
+                <box-icon name='chart' color='#ffffff' ></box-icon>
                 Total Vendors
-                </a>
-                <a href="#" className="block hover:bg-gray-700 px-4 py-2">
+                </Link>
+                <Link to="/Dashboard/VendorData" className="inline-flex items-center gap-1 hover:bg-gray-700 px-4 py-2">
+                <box-icon name='user-detail' type='solid' color='#ffffff' ></box-icon>
                 Vendors Data
-                </a>
+                </Link>
               </div>
             )}
           </div>
@@ -61,7 +68,10 @@ const Sidebar = () => {
             </button>
             {activeMenu === "userData" && (
               <div className="ml-4 mt-2 space-y-2">
-                <a href="#" className="block hover:bg-gray-700 px-4 py-2">Users</a>
+                <Link to="/UserData/Users" className="inline-flex items-center gap-1 hover:bg-gray-700 px-4 py-2">
+                <box-icon name='user-check' color='#ffffff' ></box-icon>
+                Users
+                </Link>
               </div>
             )}
           </div>
@@ -76,20 +86,12 @@ const Sidebar = () => {
             </button>
             {activeMenu === "paymentData" && (
               <div className="ml-4 mt-2 space-y-2">
-                <a href="#" className="block hover:bg-gray-700 px-4 py-2">Payments</a>
-                <a href="#" className="block hover:bg-gray-700 px-4 py-2">Payouts</a>
+                <Link to="#" className="block hover:bg-gray-700 px-4 py-2">Payments</Link>
+                <Link to="#" className="block hover:bg-gray-700 px-4 py-2">Payouts</Link>
               </div>
             )}
           </div>
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 bg-gray-100 p-4">
-        <h1 className="text-2xl font-bold">Main Content</h1>
-        <p className="mt-2 text-gray-600">
-          This is the main content area. Resize the sidebar to see it in action.
-        </p>
       </div>
     </div>
   );

@@ -68,3 +68,12 @@ export const vendorDetails = [
     { "id": 23, "type": "Locations" },
     { "id": 24, "type": "Beauty & Wellness" }
   ]
+
+  export const StateConfig = {
+    method: 'get',
+    url: 'https://api.countrystatecity.in/v1/countries/IN/states',
+    headers: {
+      'X-CSCAPI-KEY': 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA=='
+    }
+  };
+

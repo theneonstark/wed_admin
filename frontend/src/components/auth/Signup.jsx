@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from "react";
 import axios, { Axios } from "axios";
-import { vendorDetails } from "../../data";
+import { vendorDetails, StateConfig } from "../../data";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
-
 const Signup = () => {
+  const [states, setStates] = useState([]);
+  const [country, setCountry] = useState([]);
   const [formData, setFormData] = useState({
     brand: '',
     city: '',
@@ -29,10 +30,7 @@ const Signup = () => {
         const res = await axios.post('http://localhost:3500/registration_Vendor', formData,{
           withCredentials: true
         });
-        
-        
         toast.success(res.data.message);
-
         if (res.data.redirectURL) {
             setTimeout(() => {
                 navigate(res.data.redirectURL);
@@ -48,6 +46,33 @@ const Signup = () => {
         }
     }
 };
+
+useEffect(()=>{
+  const fetchStates = async () => {
+    try {
+      const response = await axios.get(StateConfig.url, {headers: StateConfig.headers});
+      setStates(response.data)
+    }catch (error) {
+      // console.error('Error fetching states:', error.message);
+    }
+  }
+
+  fetchStates()
+},[])
+
+
+useEffect(()=>{
+  const fetchCountry = async (state) => {
+    try {
+      // 
+      const response = await axios.get(`${StateConfig.url}/${formData.state}/cities`, {headers: StateConfig.headers});
+      setCountry(response.data)
+    }catch (error) {
+      // console.error('Error fetching country:', error.message);
+    }
+  }
+  fetchCountry()
+},[formData.state])
 
 
   return (
@@ -101,8 +126,9 @@ const Signup = () => {
               value={formData.state}
             >
               <option value="">Select a State</option>
-              <option value="delhi">Delhi</option>
-              <option value="mumbai">Mumbai</option>
+              {states.map((state) =>(
+                <option key={state.id} value={state.iso2}>{state.name}</option>
+              ))}
               {/* Add more cities here */}
             </select>
           </div>
@@ -119,8 +145,9 @@ const Signup = () => {
               value={formData.city}
             >
               <option value="">Select a city</option>
-              <option value="delhi">Delhi</option>
-              <option value="mumbai">Mumbai</option>
+              {country.map((city) =>(
+                <option key={city.id} value={city.name}>{city.name}</option>
+              ))}
               {/* Add more cities here */}
             </select>
           </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-
-const Header = () => {
+import { Link } from "react-router-dom";
+const DashboardHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -16,10 +16,10 @@ const Header = () => {
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-4">
-          <a href="#" className="hover:text-gray-300">Home</a>
-          <a href="#" className="hover:text-gray-300">About</a>
-          <a href="#" className="hover:text-gray-300">Services</a>
-          <a href="#" className="hover:text-gray-300">Contact</a>
+          <Link to="#" className="hover:text-gray-300">Home</Link>
+          <Link to="#" className="hover:text-gray-300">About</Link>
+          <Link to="#" className="hover:text-gray-300">Services</Link>
+          <Link to="#" className="hover:text-gray-300">Contact</Link>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -59,4 +59,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default DashboardHeader;

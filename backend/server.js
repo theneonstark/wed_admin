@@ -14,7 +14,7 @@ const app = express();
 
 // Configure CORS
 const corsOptions = {
-    origin: 'http://localhost:3001', // Allow requests from this origin
+    origin: 'http://localhost:3000', // Allow requests from this origin
     methods: 'GET,POST,PUT,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
     credentials: true, // Use 'credentials' instead of 'credential'
@@ -124,6 +124,8 @@ app.get('/VendorDashboard/info', (req, res) => {
     }
     res.status(401).json({ message: 'Unauthorized: Please login first.' });
 });
+
+
 
 app.use((req, res, next) => {
     console.log('Request Headers:', req.headers);
